@@ -91,12 +91,12 @@ body{
 }
 
 .order-header h2{
-    font-size:38px;
+    :38px;
     margin-bottom:10px;
 }
 
 .order-header p{
-    font-size:22px;
+    :22px;
     color:#777;
 }
 
@@ -114,7 +114,7 @@ body{
     border:1px solid #ddd;
     border-radius:8px;
     margin-bottom:10px;
-    font-size:20px;
+    :20px;
 }
 
 .total-box{
@@ -125,7 +125,7 @@ body{
 .total{
     display:flex;
     justify-content:space-between;
-    font-size:38px;
+    :38px;
     font-weight:bold;
     margin-bottom:20px;
 }
@@ -140,7 +140,7 @@ body{
     height:65px;
     border:none;
     border-radius:8px;
-    font-size:24px;
+    :24px;
     cursor:pointer;
 }
 
@@ -162,7 +162,7 @@ body{
 }
 
 .category{
-    height:75px;
+    height:55px;
     border:1px solid #ddd;
     border-left:8px solid #999;
     border-radius:6px;
@@ -170,7 +170,7 @@ body{
     align-items:center;
     padding-left:18px;
     margin-bottom:12px;
-    font-size:26px;
+    :26px;
     cursor:pointer;
     transition:0.2s;
 }
@@ -372,9 +372,17 @@ body{
             </div>
 
             <div class="category blue" onclick="loadCategory('menu', this)">
-                All Day Menu
+                Something Light
             </div>
 
+            <div class="category yellow" onclick="loadCategory('alcohol', this)">
+                All Day Menu
+            </div>
+            
+            <div class="category yellow" onclick="loadCategory('alcohol', this)">
+                Front Cabinet
+            </div>
+            
             <div class="category yellow" onclick="loadCategory('alcohol', this)">
                 Alcohol
             </div>
