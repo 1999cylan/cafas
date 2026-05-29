@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern POS UI</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#1c1c1c;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.pos{
+    width:1450px;
+    height:820px;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+/* TOP BAR */
+
+.topbar{
+    height:70px;
+    border-bottom:1px solid #e5e5e5;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    background:#fafafa;
+}
+
+.top-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.menu-btn{
+    font-size:28px;
+    cursor:pointer;
+}
+
+.logo{
+    width:32px;
+    height:32px;
+    border:2px solid #91c7a3;
+    border-radius:4px;
+}
+
+.register-title{
+    font-size:30px;
+    color:#555;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.search{
+    width:420px;
+    height:46px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:0 18px;
+    font-size:20px;
+}
+
+.icon{
+    font-size:28px;
+    cursor:pointer;
+    color:#666;
+}
+
+/* MAIN */
+
+.main{
+    flex:1;
+    display:flex;
+}
+
+/* LEFT ORDER */
+
+.order-panel{
+    width:360px;
+    border-right:1px solid #e5e5e5;
+    display:flex;
+    flex-direction:column;
+}
+
+.order-header{
+    padding:25px;
+    border-bottom:1px solid #eee;
+}
+
+.order-header h2{
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+.order-header p{
+    color:#777;
+    font-size:24px;
+}
+
+.order-space{
+    flex:1;
+}
+
+.total-box{
+    padding:25px;
+    border-top:1px solid #eee;
+}
+
+.total{
+    display:flex;
+    justify-content:space-between;
+    font-size:42px;
+    font-weight:bold;
+    margin-bottom:25px;
+}
+
+.bottom-buttons{
+    display:flex;
+    gap:15px;
+}
+
+.btn{
+    flex:1;
+    height:70px;
+    border:none;
+    border-radius:8px;
+    font-size:28px;
+    cursor:pointer;
+}
+
+.save{
+    background:#f0f0f0;
+}
+
+.pay{
+    background:#d8f7d8;
+}
+
+/* CENTER CATEGORY */
+
+.category-panel{
+    width:240px;
+    border-right:1px solid #e5e5e5;
+    padding:15px;
+    overflow:auto;
+}
+
+.category{
+    height:78px;
+    border:1px solid #ddd;
+    border-left:8px solid #999;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    padding-left:18px;
+    font-size:28px;
+    margin-bottom:14px;
+    background:#fff;
+    cursor:pointer;
+}
+
+.category.active{
+    border:2px solid #76a8ff;
+}
+
+.orange{ border-left-color:#ff9f2d; }
+.purple{ border-left-color:#d59cff; }
+.pink{ border-left-color:#ff7ec8; }
+.green{ border-left-color:#7cc84a; }
+.blue{ border-left-color:#4d7cff; }
+.yellow{ border-left-color:#d9b11f; }
+.gray{ border-left-color:#888; }
+
+/* RIGHT PRODUCTS */
+
+.product-panel{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* QTY */
+
+.qty-bar{
+    height:80px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid #e5e5e5;
+}
+
+.qty-title{
+    width:120px;
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.qty-list{
+    display:flex;
+    flex:1;
+}
+
+.qty-item{
+    width:90px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    color:#666;
+    cursor:pointer;
+}
+
+.qty-item.active{
+    background:#3ea6ff;
+    color:#fff;
+}
+
+/* PRODUCTS */
+
+.products{
+    flex:1;
+    overflow:auto;
+    padding:16px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:16px;
+}
+
+.product{
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:18px;
+    min-height:145px;
+    position:relative;
+    background:#fff;
+    cursor:pointer;
+    transition:0.15s;
+}
+
+.product:hover{
+    transform:scale(1.02);
+    background:#fafafa;
+}
+
+.product::before{
+    content:'';
+    width:0;
+    height:0;
+    border-top:20px solid #999;
+    border-right:20px solid transparent;
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+.product.yellow::before{ border-top-color:#d8b31e; }
+.product.blue::before{ border-top-color:#2457ff; }
+.product.orange::before{ border-top-color:#ff8b22; }
+.product.green::before{ border-top-color:#64b833; }
+.product.pink::before{ border-top-color:#d980bc; }
+.product.gray::before{ border-top-color:#999; }
+.product.brown::before{ border-top-color:#b37b44; }
+
+.product-name{
+    font-size:20px;
+    color:#444;
+    margin-top:10px;
+    line-height:1.4;
+    min-height:58px;
+}
+
+.product-price{
+    font-size:16px;
+    color:#777;
+    margin-top:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="pos">
+
+    <!-- TOP -->
+    <div class="topbar">
+
+        <div class="top-left">
+            <div class="menu-btn">☰</div>
+            <div class="logo"></div>
+            <div class="register-title">Register: Default POS Menu</div>
+        </div>
+
+        <div class="top-right">
+            <input class="search" placeholder="Scan barcode or search">
+            <div class="icon">ORDERS</div>
+            <div class="icon">＋</div>
+            <div class="icon">⟳</div>
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- LEFT -->
+        <div class="order-panel">
+
+            <div class="order-header">
+                <h2>Take Away Order</h2>
+                <p>Tap an item to start a new order.</p>
+            </div>
+
+            <div class="order-space"></div>
+
+            <div class="total-box">
+
+                <div class="total">
+                    <span>Total</span>
+                    <span>$0.00</span>
+                </div>
+
+                <div class="bottom-buttons">
+                    <button class="btn save">Save</button>
+                    <button class="btn pay">Pay</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="category-panel">
+
+            <div class="category gray">Coffee / Tea</div>
+            <div class="category orange">Daily Special</div>
+            <div class="category purple active">Cold Drinks</div>
+            <div class="category pink">Pasta</div>
+            <div class="category green">Breakfast</div>
+            <div class="category green">Kids</div>
+            <div class="category gray">Something Light</div>
+            <div class="category blue">All Day Menu</div>
+            <div class="category green">Front Cabinet</div>
+            <div class="category yellow">Alcohol</div>
+
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="product-panel">
+
+            <!-- QTY -->
+            <div class="qty-bar">
+
+                <div class="qty-title">QTY</div>
+
+                <div class="qty-list">
+                    <div class="qty-item active">1</div>
+                    <div class="qty-item">2</div>
+                    <div class="qty-item">3</div>
+                    <div class="qty-item">4</div>
+                    <div class="qty-item">5</div>
+                    <div class="qty-item">6</div>
+                    <div class="qty-item">7</div>
+                    <div class="qty-item">8</div>
+                    <div class="qty-item">9</div>
+                    <div class="qty-item">10</div>
+                </div>
+
+            </div>
+
+            <!-- ITEMS -->
+            <div class="products">
+
+                <div class="product gray">
+                    <div class="product-name">Iced Long Black</div>
+                    <div class="product-price">$6.50</div>
+                </div>
+
+                <div class="product gray">
+                    <div class="product-name">Iced Latte</div>
+                    <div class="product-price">$7.00</div>
+                </div>
+
+                <div class="product yellow">
+                    <div class="product-name">Iced Cappuccino</div>
+                    <div class="product-price">$8.50</div>
+                </div>
+
+                <div class="product blue">
+                    <div class="product-name">Iced Chai Latte</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product blue">
+                    <div class="product-name">Iced Mocha</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product purple">
+                    <div class="product-name">Iced Coffee</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product green">
+                    <div class="product-name">Iced Chocolate</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product orange">
+                    <div class="product-name">Soft Drink</div>
+                    <div class="product-price">$3.50</div>
+                </div>
+
+                <div class="product pink">
+                    <div class="product-name">Energy Drink</div>
+                    <div class="product-price">$5.00</div>
+                </div>
+
+                <div class="product green">
+                    <div class="product-name">Water</div>
+                    <div class="product-price">$4.00</div>
+                </div>
+
+                <div class="product green">
+                    <div class="product-name">Sparkling Water</div>
+                    <div class="product-price">$6.00</div>
+                </div>
+
+                <div class="product pink">
+                    <div class="product-name">Iced Matcha</div>
+                    <div class="product-price">$8.50</div>
+                </div>
+
+                <div class="product pink">
+                    <div class="product-name">Pop Top</div>
+                    <div class="product-price">$3.50</div>
+                </div>
+
+                <div class="product green">
+                    <div class="product-name">Open Drink</div>
+                    <div class="product-price">Variable</div>
+                </div>
+
+                <div class="product pink">
+                    <div class="product-name">Iced Dirty Chai</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product yellow">
+                    <div class="product-name">Iced Latte</div>
+                    <div class="product-price">$7.00</div>
+                </div>
+
+                <div class="product pink">
+                    <div class="product-name">Crush Drink</div>
+                    <div class="product-price">$9.00</div>
+                </div>
+
+                <div class="product yellow">
+                    <div class="product-name">Refreshing Drink</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product brown">
+                    <div class="product-name">Espresso Sunrise</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+                <div class="product brown">
+                    <div class="product-name">Iced Coconut Americano</div>
+                    <div class="product-price">$8.00</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
