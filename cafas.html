@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive POS</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#1f1f1f;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.pos{
+    width:1450px;
+    height:820px;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+/* TOP */
+
+.topbar{
+    height:70px;
+    border-bottom:1px solid #e5e5e5;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 20px;
+    background:#fafafa;
+}
+
+.top-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.menu{
+    font-size:30px;
+    cursor:pointer;
+}
+
+.title{
+    font-size:30px;
+    color:#555;
+}
+
+.search{
+    width:400px;
+    height:45px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:0 15px;
+    font-size:18px;
+}
+
+/* MAIN */
+
+.main{
+    flex:1;
+    display:flex;
+}
+
+/* LEFT ORDER */
+
+.order-panel{
+    width:340px;
+    border-right:1px solid #e5e5e5;
+    display:flex;
+    flex-direction:column;
+}
+
+.order-header{
+    padding:25px;
+    border-bottom:1px solid #eee;
+}
+
+.order-header h2{
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.order-header p{
+    font-size:22px;
+    color:#777;
+}
+
+.order-list{
+    flex:1;
+    padding:20px;
+    overflow:auto;
+}
+
+.order-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-bottom:10px;
+    font-size:20px;
+}
+
+.total-box{
+    padding:20px;
+    border-top:1px solid #eee;
+}
+
+.total{
+    display:flex;
+    justify-content:space-between;
+    font-size:38px;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+.bottom-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.btn{
+    flex:1;
+    height:65px;
+    border:none;
+    border-radius:8px;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.save{
+    background:#efefef;
+}
+
+.pay{
+    background:#d6f8d6;
+}
+
+/* CATEGORY */
+
+.category-panel{
+    width:240px;
+    border-right:1px solid #e5e5e5;
+    padding:15px;
+    overflow:auto;
+}
+
+.category{
+    height:75px;
+    border:1px solid #ddd;
+    border-left:8px solid #999;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    padding-left:18px;
+    margin-bottom:12px;
+    font-size:26px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.category:hover{
+    background:#fafafa;
+}
+
+.category.active{
+    border:2px solid #4ea6ff;
+    background:#f6fbff;
+}
+
+/* COLORS */
+
+.orange{border-left-color:#ff9b2f;}
+.purple{border-left-color:#cf92ff;}
+.pink{border-left-color:#ff89bc;}
+.green{border-left-color:#6ec03f;}
+.blue{border-left-color:#4a70ff;}
+.yellow{border-left-color:#d8b117;}
+.gray{border-left-color:#999;}
+
+/* RIGHT */
+
+.product-panel{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* QTY */
+
+.qty-bar{
+    height:75px;
+    border-bottom:1px solid #eee;
+    display:flex;
+    align-items:center;
+}
+
+.qty-title{
+    width:120px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.qty-list{
+    display:flex;
+    flex:1;
+}
+
+.qty{
+    width:80px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+    cursor:pointer;
+}
+
+.qty.active{
+    background:#3ea6ff;
+    color:#fff;
+}
+
+/* PRODUCTS */
+
+.products{
+    flex:1;
+    overflow:auto;
+    padding:16px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:15px;
+}
+
+.product{
+    border:1px solid #ddd;
+    border-radius:6px;
+    min-height:135px;
+    padding:15px;
+    position:relative;
+    cursor:pointer;
+    transition:0.15s;
+}
+
+.product:hover{
+    background:#fafafa;
+    transform:scale(1.02);
+}
+
+.product::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:0;
+    height:0;
+    border-top:20px solid #888;
+    border-right:20px solid transparent;
+}
+
+.product-name{
+    margin-top:12px;
+    font-size:20px;
+    color:#444;
+    min-height:55px;
+}
+
+.product-price{
+    margin-top:15px;
+    font-size:16px;
+    color:#777;
+}
+
+/* PRODUCT COLORS */
+
+.p1::before{border-top-color:#999;}
+.p2::before{border-top-color:#4b6cff;}
+.p3::before{border-top-color:#ff9729;}
+.p4::before{border-top-color:#70bb41;}
+.p5::before{border-top-color:#d87bc0;}
+.p6::before{border-top-color:#d5b117;}
+
+</style>
+</head>
+
+<body>
+
+<div class="pos">
+
+    <!-- TOP -->
+    <div class="topbar">
+
+        <div class="top-left">
+            <div class="menu">☰</div>
+            <div class="title">Register : Default POS Menu</div>
+        </div>
+
+        <input class="search" placeholder="Scan barcode or search">
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- LEFT -->
+        <div class="order-panel">
+
+            <div class="order-header">
+                <h2>Take Away Order</h2>
+                <p>Tap an item to start a new order.</p>
+            </div>
+
+            <div class="order-list" id="orderList"></div>
+
+            <div class="total-box">
+
+                <div class="total">
+                    <span>Total</span>
+                    <span id="totalPrice">$0.00</span>
+                </div>
+
+                <div class="bottom-buttons">
+                    <button class="btn save">Save</button>
+                    <button class="btn pay">Pay</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="category-panel">
+
+            <div class="category gray active" onclick="loadCategory('coffee', this)">
+                Coffee / Tea
+            </div>
+
+            <div class="category orange" onclick="loadCategory('special', this)">
+                Daily Special
+            </div>
+
+            <div class="category purple" onclick="loadCategory('cold', this)">
+                Cold Drinks
+            </div>
+
+            <div class="category pink" onclick="loadCategory('pasta', this)">
+                Pasta
+            </div>
+
+            <div class="category green" onclick="loadCategory('breakfast', this)">
+                Breakfast
+            </div>
+
+            <div class="category green" onclick="loadCategory('kids', this)">
+                Kids
+            </div>
+
+            <div class="category blue" onclick="loadCategory('menu', this)">
+                All Day Menu
+            </div>
+
+            <div class="category yellow" onclick="loadCategory('alcohol', this)">
+                Alcohol
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="product-panel">
+
+            <!-- QTY -->
+            <div class="qty-bar">
+
+                <div class="qty-title">QTY</div>
+
+                <div class="qty-list">
+                    <div class="qty active">1</div>
+                    <div class="qty">2</div>
+                    <div class="qty">3</div>
+                    <div class="qty">4</div>
+                    <div class="qty">5</div>
+                    <div class="qty">6</div>
+                    <div class="qty">7</div>
+                    <div class="qty">8</div>
+                    <div class="qty">9</div>
+                    <div class="qty">10</div>
+                </div>
+
+            </div>
+
+            <!-- PRODUCTS -->
+            <div class="products" id="products"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const menuData = {
+
+    coffee: [
+        {name:"Espresso", price:4.5, class:"p1"},
+        {name:"Latte", price:6.0, class:"p2"},
+        {name:"Cappuccino", price:6.5, class:"p3"},
+        {name:"Flat White", price:6.0, class:"p4"},
+        {name:"Mocha", price:7.0, class:"p5"},
+        {name:"Long Black", price:5.0, class:"p6"}
+    ],
+
+    special: [
+        {name:"Chef Burger", price:15, class:"p3"},
+        {name:"Seafood Pasta", price:18, class:"p5"},
+        {name:"Steak Plate", price:22, class:"p4"}
+    ],
+
+    cold: [
+        {name:"Iced Latte", price:7, class:"p2"},
+        {name:"Iced Matcha", price:8, class:"p5"},
+        {name:"Sparkling Water", price:5, class:"p4"},
+        {name:"Soft Drink", price:3.5, class:"p3"},
+        {name:"Cold Brew", price:7.5, class:"p1"}
+    ],
+
+    pasta: [
+        {name:"Carbonara", price:16, class:"p6"},
+        {name:"Bolognese", price:17, class:"p5"},
+        {name:"Pesto Pasta", price:15, class:"p4"}
+    ],
+
+    breakfast: [
+        {name:"Big Breakfast", price:18, class:"p3"},
+        {name:"Egg Toast", price:9, class:"p2"},
+        {name:"Pancake", price:12, class:"p5"}
+    ],
+
+    kids: [
+        {name:"Kids Burger", price:8, class:"p3"},
+        {name:"Kids Nuggets", price:7, class:"p4"}
+    ],
+
+    menu: [
+        {name:"Chicken Rice", price:14, class:"p2"},
+        {name:"Fish & Chips", price:19, class:"p6"}
+    ],
+
+    alcohol: [
+        {name:"Beer", price:9, class:"p1"},
+        {name:"Wine", price:12, class:"p5"}
+    ]
+};
+
+const productsDiv = document.getElementById("products");
+const orderList = document.getElementById("orderList");
+const totalPrice = document.getElementById("totalPrice");
+
+let total = 0;
+
+/* 載入分類 */
+
+function loadCategory(category, element){
+
+    document.querySelectorAll(".category").forEach(c=>{
+        c.classList.remove("active");
+    });
+
+    element.classList.add("active");
+
+    productsDiv.innerHTML = "";
+
+    menuData[category].forEach(item=>{
+
+        productsDiv.innerHTML += `
+            <div class="product ${item.class}" 
+                 onclick="addOrder('${item.name}', ${item.price})">
+
+                <div class="product-name">
+                    ${item.name}
+                </div>
+
+                <div class="product-price">
+                    $${item.price.toFixed(2)}
+                </div>
+
+            </div>
+        `;
+
+    });
+
+}
+
+/* 加入訂單 */
+
+function addOrder(name, price){
+
+    total += price;
+
+    orderList.innerHTML += `
+        <div class="order-item">
+            <span>${name}</span>
+            <span>$${price.toFixed(2)}</span>
+        </div>
+    `;
+
+    totalPrice.innerText = "$" + total.toFixed(2);
+
+}
+
+/* 預設載入 */
+
+loadCategory("coffee", document.querySelector(".category"));
+
+</script>
+
+</body>
+</html>
