@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>POS 系統（可客製）</title>
+
+<style>
+body {
+    font-family: Arial;
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+.left, .right {
+    padding: 20px;
+}
+
+.left {
+    width: 60%;
+    background: #fff;
+    border-right: 2px solid #ddd;
+}
+
+.right {
+    width: 40%;
+    background: #fafafa;
+}
+
+.product {
+    display: inline-block;
+    width: 140px;
+    padding: 12px;
+    margin: 10px;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.product:hover {
+    background: #0056b3;
+}
+
+.cart-item {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    background: green;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: darkgreen;
+}
+
+/* 彈窗 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: white;
+    width: 300px;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+select, input {
+    width: 100%;
+    margin: 5px 0 10px;
+    padding: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="left">
+    <h2>商品</h2>
+
+    <div class="product" onclick="openModal('咖啡', 80)">咖啡<br>NT$80</div>
+    <div class="product" onclick="addSimple('茶', 50)">茶<br>NT$50</div>
+    <div class="product" onclick="addSimple('蛋糕', 120)">蛋糕<br>NT$120</div>
+</div>
+
+<div class="right">
+    <h2>購物車</h2>
+    <div id="cart"></div>
+    <h3>總金額：NT$ <span id="total">0</span></h3>
+
+    <button onclick="checkout()">結帳</button>
+</div>
+
+<!-- 彈窗 -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3>咖啡客製化</h3>
+
+        <label>甜度</label>
+        <select id="sugar">
+            <option>無糖</option>
+            <option>微糖</option>
+            <option>半糖</option>
+            <option>全糖</option>
+        </select>
+
+        <label>冰量</label>
+        <select id="ice">
+            <option>去冰</option>
+            <option>少冰</option>
+            <option>正常冰</option>
+        </select>
+
+        <label>備註</label>
+        <input type="text" id="note" placeholder="例如：少奶、溫的">
+
+        <button onclick="confirmAdd()">加入購物車</button>
+        <button onclick="closeModal()" style="background:red;">取消</button>
+    </div>
+</div>
+
+<script>
+let cart = [];
+let currentItem = {};
+
+function addSimple(name, price) {
+    cart.push({ name, price, detail: "" });
+    renderCart();
+}
+
+function openModal(name, price) {
+    currentItem = { name, price };
+    document.getElementById("modal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+function confirmAdd() {
+    let sugar = document.getElementById("sugar").value;
+    let ice = document.getElementById("ice").value;
+    let note = document.getElementById("note").value;
+
+    cart.push({
+        name: currentItem.name,
+        price: currentItem.price,
+        detail: `(${sugar}, ${ice}${note ? ", " + note : ""})`
+    });
+
+    closeModal();
+    renderCart();
+}
+
+function renderCart() {
+    let cartDiv = document.getElementById("cart");
+    cartDiv.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach(item => {
+        total += item.price;
+
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <div><b>${item.name}</b> ${item.detail}</div>
+                <div>NT$${item.price}</div>
+            </div>
+        `;
+    });
+
+    document.getElementById("total").innerText = total;
+}
+
+function checkout() {
+    if (cart.length === 0) {
+        alert("購物車是空的！");
+        return;
+    }
+
+    alert("結帳成功！總金額 NT$ " + document.getElementById("total").innerText);
+    cart = [];
+    renderCart();
+}
+</script>
+
+</body>
+</html>
